@@ -14,7 +14,8 @@ async function startNode(){
   const node = await Libp2p.create({
     addresses: {
       listen: [
-        '/ip4/0.0.0.0/tcp/8888/ws'
+        '/ip4/0.0.0.0/tcp/0',
+        '/ip4/0.0.0.0/tcp/0/ws'
       ]
     },
     modules: {
@@ -30,23 +31,31 @@ async function startNode(){
     },
     config: {
       peerDiscovery: {
-        autoDial: true,
+        //        autoDial: true,
         [MulticastDNS.tag]: {
-          interval: 1000,
-          enabled: true
+          enabled: true,
+          interval: 20e3
         }
       }
     }
   })
 
-  node.on('peer:discovery', (peer) => {
-    console.log('Discovered %s', peer.id.toB58String()) // Log discovered peer
-  })
 
 
-  await node.start()
-  console.log(node.multiaddrs)
-  console.log("Started node")
+
+    console.log("Started node")
+  return node;
 }
 
-startNode()
+async function main(){
+  let node1 = await startNode()
+
+
+  node1.on('peer:discovery', (peer) => {
+    console.log('Discovered %s', peer.toB58String()) // Log discovered peer
+  })
+
+  await node1.start()
+}
+
+main()
