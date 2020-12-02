@@ -12,6 +12,11 @@ const GossipSub = require('libp2p-gossipsub')
 async function startNode(){
   const transportKey = WS.prototype[Symbol.toStringTag]
   const node = await Libp2p.create({
+    addresses: {
+      listen: [
+        '/ip4/0.0.0.0/tcp/8888/ws'
+      ]
+    },
     modules: {
       transport: [
         TCP,
@@ -33,12 +38,14 @@ async function startNode(){
       }
     }
   })
+
   node.on('peer:discovery', (peer) => {
     console.log('Discovered %s', peer.id.toB58String()) // Log discovered peer
   })
 
 
   await node.start()
+  console.log(node.multiaddrs)
   console.log("Started node")
 }
 
