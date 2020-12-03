@@ -31,7 +31,7 @@ async function startNode(){
     },
     config: {
       peerDiscovery: {
-        //        autoDial: true,
+        autoDial: true,
         [MulticastDNS.tag]: {
           enabled: true,
           interval: 20e3
@@ -50,6 +50,9 @@ async function startNode(){
 async function main(){
   let node1 = await startNode()
 
+  node1.connectionManager.on('peer:connect', (connection) => {
+    console.log('Connected to %s', connection.remotePeer.toB58String()) // Log connected peer
+  })
 
   node1.on('peer:discovery', (peer) => {
     console.log('Discovered %s', peer.toB58String()) // Log discovered peer
